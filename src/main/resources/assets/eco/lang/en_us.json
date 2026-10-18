@@ -1,0 +1,13 @@
+{
+  "itemGroup.eco": "Example Mod Tab",
+  "block.eco.example_block": "Example Block",
+  "item.eco.example_item": "Example Item",
+
+  "eco.configuration.title": "Entity Collision Optimization Configs",
+  "eco.configuration.section.eco.common.toml": "Entity Collision Optimization Configs",
+  "eco.configuration.section.eco.common.toml.title": "Entity Collision Optimization Configs",
+  "eco.configuration.items": "Item List",
+  "eco.configuration.logDirtBlock": "Log Dirt Block",
+  "eco.configuration.magicNumberIntroduction": "Magic Number Text",
+  "eco.configuration.magicNumber": "Magic Number"
+}
