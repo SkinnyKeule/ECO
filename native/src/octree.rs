@@ -51,9 +51,16 @@ impl Octree {
         self.root.insert(entity.id, &self.entities)
     }
 
-    #[allow(dead_code)]
-    pub fn query(&self, entity: Entity) -> HashSet<i32> {
-        self.root.query(&entity.bounding_box, &self.entities)
+    pub fn query(&self, bounding_box: &BoundingBox) -> HashSet<i32> {
+        self.root.query(bounding_box, &self.entities)
+    }
+
+    pub fn delete(&mut self, entity_id: i32) {
+        // removes the bounding box from the map and passes it to the node for deletion handling
+        if let Some(query_box) = self.entities.remove(&entity_id) {
+            self.root.delete(&query_box, entity_id);
+        }
+        // bounding box dropped here
     }
 
     #[allow(dead_code)]
@@ -131,6 +138,21 @@ impl OctreeNode {
             }
         }
         ret_val
+    }
+
+    // might have to improce this to explicitily 
+    fn delete(&mut self, query_box: &BoundingBox, entity_id: i32) {
+        if !self.overlaps(query_box) {
+            return;
+        }
+
+        if self.has_been_split {
+            for child in self.children.as_mut().unwrap().iter_mut() {
+                child.delete(query_box, entity_id)
+            }
+        }
+
+        self.entities.remove(&entity_id);
     }
 
     pub fn split(&mut self, entity_bounds: &HashMap<i32, BoundingBox>) {

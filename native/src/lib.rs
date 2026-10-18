@@ -73,5 +73,18 @@ pub extern "system" fn Java_com_optimization_eco_NativeCollision_insertEntity(
     if tree.insert(entity) {
         return JNI_TRUE;
     }
-    return JNI_FALSE
+    return JNI_FALSE;
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_com_optimization_eco_NativeCollision_deleteNative(
+    _env: EnvUnowned,
+    _class: JClass,
+    id: jint
+) -> jint {
+    let mut tree = get_octree().lock().expect("Octree mutex poisoned");
+
+    tree.delete(id);
+
+    return tree.size();
 }
