@@ -4,11 +4,6 @@ const MAX_ENTRIES: usize = 10;
 const MAX_DEPTH: usize = 8;
 
 
-pub struct Entity {
-    pub id: i32,
-    pub bounding_box: BoundingBox
-}
-
 #[derive(Debug)]
 pub struct Octree {
     pub entities: HashMap<i32, BoundingBox>,
@@ -40,15 +35,15 @@ impl Octree {
         }
     }
 
-    pub fn insert(&mut self, entity: Entity) -> bool {
+    pub fn insert(&mut self, entity_id: i32, bounding_box: BoundingBox) -> bool {
         // only insert entities that actually fit into the tree (for testing for now)
-        if !self.root.overlaps(&entity.bounding_box) {
+        if !self.root.overlaps(&bounding_box) {
             return false;
         }
         // insert the bounding box into the map first so all nodes can have access to it
-        self.entities.insert(entity.id, entity.bounding_box);
+        self.entities.insert(entity_id, bounding_box);
 
-        self.root.insert(entity.id, &self.entities)
+        self.root.insert(entity_id, &self.entities)
     }
 
     pub fn query(&self, bounding_box: &BoundingBox) -> HashSet<i32> {
@@ -221,8 +216,11 @@ impl OctreeNode {
         }
     }
 
+    #[allow(dead_code)]
     pub fn size(&self) -> i32 {
         let mut size: i32 = 0;
+        
+        // if the node has children it has been split before
         match &self.children {
             Some(children) => {
                 for child in children {
@@ -231,7 +229,8 @@ impl OctreeNode {
             },
 
             None => {
-                size = 1
+                // add the amount of all leaf nodes
+                size = self.entities.len() as i32;
             }
         }
 
